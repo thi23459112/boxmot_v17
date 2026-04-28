@@ -1,0 +1,5 @@
+權重放在 weight 資料夾中
+
+yolo export model=weight/car.pt format=engine half=True device=0
+yolo export model=weight/plate.pt format=engine half=True device=0
+yolo export model=weight/num.pt format=engine half=True device=0

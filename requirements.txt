@@ -1,0 +1,16 @@
+#filterpy
+#ultralytics
+#tensorrt
+#nvidia-tensorrt
+#torchreid
+#tensorboard
+#onnx
+#onnxscript
+pandas
+gdown
+ftfy
+regex
+loguru
+click
+lapx
+openpyxl

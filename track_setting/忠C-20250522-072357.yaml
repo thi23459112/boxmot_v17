@@ -1,0 +1,79 @@
+# 忠C-20250522-072357.yaml
+# ------------------------------------------------------------
+# 說明：
+# - 這份檔案是自動生成的設定（來源：忠C-20250522-072357）
+# ------------------------------------------------------------
+
+source_id: "忠C-20250522-072357"            
+
+# ========= 輸入來源（影片/串流） =========
+source: "test/忠C-20250522-072357.mp4"     # ✅ 影片路徑
+stream_fps: 15.0                                    # RTSP 手動 FPS（null 表示不強制）
+# 影片的真實起始時間 (格式：YYYY-MM-DD HH:MM:SS)
+start_time: "2025-05-22 07:23:57"
+
+# ========= 模型路徑 =========
+models:
+  vehicle: "weight/car.engine"
+  plate: "weight/plate.engine"
+  num: "weight/num.engine"
+  reid: "weight/mobilenetv2_x1_0_market1501.engine"
+
+# ========= 輸出設定 =========
+output:
+  save_output_video: True
+  output_video_dir: "output_video" # ✅ 輸出影片路徑
+
+  # ❌ only for 礁溪轉運站，其他專案不影響 
+  db_dir: "output_db"
+  db_name: "J219_BusStation.db"
+
+  # 截圖根目錄（建議每路加子資料夾避免互相覆蓋）
+  screenshot_dir: "screenshot/忠C-20250522-072357"
+
+# ========= 偵測參數 =========
+detect:
+  yolo_conf: 0.25                        # 車輛信心值
+  yolo_classes: [0, 1, 2, 3, 4, 5, 6]    # bicycle, bus, car, motorbike, smalltruck, trailer, truck 
+  plate_conf: 0.25                       # 車牌信心值
+  num_conf: 0.30                         # 車號信心值
+  char_nms_iou: 0.50                     # 字元框 NMS IoU
+
+# ========= 追蹤器參數 =========
+tracker:
+  # 追蹤器類型，可改為 'botsort','deepocsort','ocsort','strongsort','boosttrack','bytetrack','imprassoc','hybridsort','fasttracker','sfsort','cbiou'
+  tracker_type: "sfsort"              # ✅ 如果 cbiou 追蹤不好，改 imprassoc      
+  show_trajectories: false           # 是否顯示軌跡
+
+# ========= 座標基準與 ROI / MASK =========
+geometry:                                   # ✅ 影片/串流解析度
+  base_w: 1920
+  base_h: 1080
+
+  # 偵測遮罩（Mask）：遮罩外不偵測
+  mask_points:                              # ✅ 藍色遮罩(順時針)
+    - [0, 0]
+    - [1920, 0]
+    - [1920, 1080]
+    - [0, 1080]
+
+  # 計數/辨識 ROI：只有 ROI 內才做 LPR/累積
+  region_points:                            # ✅ 黃色 ROI (順時針)
+    - [0, 0]
+    - [1920, 0]
+    - [1920, 1080]
+    - [0, 1080]
+
+# ========= 統計/合併規則 =========
+session:
+  leave_roi_frames_to_count: 15     # ✅ 離開 ROI > N 幀才結算
+  plate_min_votes: 2                # ✅ 車牌至少出現 N 次才採信
+  cleanup_frames: 60                # 結算後離開太久就清除 tid 狀態
+  miss_grace_frames: 45             # 遮擋/漏偵測容忍幀數
+  plate_merge_gap_seconds: 600      # 同車牌 10 分鐘內視為同一筆（跨 ID 合併）
+  flush_interval_seconds: 30        # 每隔 N 秒掃一次逾時 session 並落盤
+
+# ========= 容忍統計規則 =========
+track_logic:
+  movement_threshold: 30             # 位移像素門檻（用於判定進出方向）
+  min_roi_hits: 5                    # 命中 ROI 的最小幀數（用於統計結算）
